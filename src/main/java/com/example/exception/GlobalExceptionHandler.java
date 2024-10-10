@@ -1,5 +1,8 @@
 package com.example.exception;
 
+import static com.example.constants.MessageConstants.ERROR_DEFAULT_MESSAGE;
+import static org.springframework.http.HttpStatus.*;
+
 import com.example.utils.dto.response.ErrorResponseDTO;
 import com.example.utils.service.IMessageService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import static com.example.constants.MessageConstants.ERROR_DEFAULT_MESSAGE;
-import static org.springframework.http.HttpStatus.*;
 
 /** Controller advice class for handling exceptions globally. */
 @Log4j2

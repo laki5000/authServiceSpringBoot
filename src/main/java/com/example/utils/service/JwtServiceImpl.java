@@ -3,18 +3,15 @@ package com.example.utils.service;
 import com.example.domain.user.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.SecretKey;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Service class for handling JWT.
- */
+/** Service class for handling JWT. */
 @Log4j2
 @Service
 public class JwtServiceImpl implements IJwtService {
@@ -27,7 +24,9 @@ public class JwtServiceImpl implements IJwtService {
      * @param secretKey the secret key
      * @param expirationTime the expiration time
      */
-    public JwtServiceImpl(@Value("${jwt.secret}") String secretKey, @Value("${jwt.expiration}") Long expirationTime) {
+    public JwtServiceImpl(
+            @Value("${jwt.secret}") String secretKey,
+            @Value("${jwt.expiration}") Long expirationTime) {
         SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
         EXPIRATION_TIME = expirationTime;
     }
@@ -70,6 +69,7 @@ public class JwtServiceImpl implements IJwtService {
                 .subject(subject)
                 .issuedAt(now)
                 .expiration(expiration)
-                .signWith(SECRET_KEY).compact();
+                .signWith(SECRET_KEY)
+                .compact();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.domain.user.service;
 
+import static com.example.constants.MessageConstants.*;
+
 import com.example.domain.user.dto.request.UserLoginRequestDTO;
 import com.example.domain.user.dto.response.UserLoginResponseDTO;
 import com.example.domain.user.model.User;
@@ -7,14 +9,11 @@ import com.example.domain.user.repository.IUserRepository;
 import com.example.exception.InvalidCredentialsException;
 import com.example.utils.service.IJwtService;
 import com.example.utils.service.IMessageService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-import static com.example.constants.MessageConstants.*;
 
 /** Service class for managing user-related operations. */
 @Log4j2
@@ -37,12 +36,12 @@ public class UserServiceImpl implements IUserService {
     public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
         log.debug("login called");
 
-        User user = getByLoginAndPassword(userLoginRequestDTO.getUsername(), userLoginRequestDTO.getPassword());
+        User user =
+                getByLoginAndPassword(
+                        userLoginRequestDTO.getUsername(), userLoginRequestDTO.getPassword());
         String token = jwtService.generateToken(user);
 
-        return UserLoginResponseDTO.builder()
-                .token(token)
-                .build();
+        return UserLoginResponseDTO.builder().token(token).build();
     }
 
     /**
