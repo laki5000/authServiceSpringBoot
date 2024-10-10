@@ -1,5 +1,6 @@
 package com.example.config;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /** Configuration class for Spring Security */
+@Log4j2
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -22,6 +24,8 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("securityFilterChain called");
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
@@ -35,6 +39,8 @@ public class SecurityConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
+        log.info("passwordEncoder called");
+
         return new BCryptPasswordEncoder();
     }
 }

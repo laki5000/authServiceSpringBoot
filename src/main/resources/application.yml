@@ -8,6 +8,6 @@ spring:
         hibernate:
             ddl-auto: update
         open-in-view: false
-
-
-
+jwt:
+    secret: my-very-long-secret-key-with-at-least-32-characters
+    expiration: 1800000
