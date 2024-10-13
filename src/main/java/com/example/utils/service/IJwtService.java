@@ -11,4 +11,11 @@ public interface IJwtService {
      * @return the token
      */
     String generateToken(User user);
+
+    /**
+     * Invalidates a token.
+     *
+     * @param token the token to invalidate
+     */
+    void invalidateToken(String token);
 }

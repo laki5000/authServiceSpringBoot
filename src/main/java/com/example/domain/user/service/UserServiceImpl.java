@@ -64,4 +64,16 @@ public class UserServiceImpl implements IUserService {
 
         return user.get();
     }
+
+    /**
+     * Logs out a user.
+     *
+     * @param token the token to log out
+     */
+    @Override
+    public void logout(String token) {
+        log.debug("logout called");
+
+        jwtService.invalidateToken(token);
+    }
 }

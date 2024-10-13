@@ -2,7 +2,9 @@ package com.example.domain.user.controller;
 
 import static com.example.constants.EndpointConstants.*;
 import static com.example.constants.MessageConstants.SUCCESS_USER_LOGGED_IN;
+import static com.example.constants.MessageConstants.SUCCESS_USER_LOGGED_OUT;
 
+import com.example.base.dto.response.BaseResponseDTO;
 import com.example.domain.user.dto.request.UserLoginRequestDTO;
 import com.example.domain.user.service.IUserService;
 import com.example.utils.dto.response.SuccessResponseDTO;
@@ -39,6 +41,25 @@ public class UserControllerImpl implements IUserController {
                 SuccessResponseDTO.builder()
                         .message(messageService.getMessage(SUCCESS_USER_LOGGED_IN))
                         .data(userService.login(userLoginRequestDTO))
+                        .build());
+    }
+
+    /**
+     * Logs out a user.
+     *
+     * @param token the token to log out
+     * @return the response entity
+     */
+    @Override
+    @PostMapping(LOGOUT_PATH)
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+        log.info("logout called");
+
+        userService.logout(token);
+
+        return ResponseEntity.ok(
+                BaseResponseDTO.builder()
+                        .message(messageService.getMessage(SUCCESS_USER_LOGGED_OUT))
                         .build());
     }
 }

@@ -5,4 +5,5 @@ public class EndpointConstants {
     public static final String USER_BASE_URL = "/api/v1/users";
 
     public static final String LOGIN_PATH = "/login";
+    public static final String LOGOUT_PATH = "/logout";
 }

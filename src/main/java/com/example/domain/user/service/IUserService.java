@@ -12,4 +12,11 @@ public interface IUserService {
      * @return the response DTO
      */
     UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO);
+
+    /**
+     * Logs out a user.
+     *
+     * @param token the token to log out
+     */
+    void logout(String token);
 }

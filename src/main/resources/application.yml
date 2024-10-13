@@ -9,5 +9,5 @@ spring:
             ddl-auto: update
         open-in-view: false
 jwt:
-    secret: my-very-long-secret-key-with-at-least-32-characters
+    secret: bce4c6d1e91aa1f9eea528b5e37f38bd
     expiration: 1800000
