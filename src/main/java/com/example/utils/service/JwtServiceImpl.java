@@ -4,6 +4,7 @@ import static com.example.constants.MessageConstants.ERROR_TOKEN_DECRYPTION;
 import static com.example.constants.MessageConstants.ERROR_TOKEN_ENCRYPTION;
 
 import com.example.domain.invalidatedToken.service.IInvalidatedTokenService;
+import com.example.domain.user.model.Role;
 import com.example.domain.user.model.User;
 import com.example.exception.TokenEncryptionException;
 import io.jsonwebtoken.*;
@@ -11,10 +12,8 @@ import io.jsonwebtoken.security.Keys;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.extern.log4j.Log4j2;
@@ -67,9 +66,11 @@ public class JwtServiceImpl implements IJwtService {
         log.debug("generateToken called");
 
         Map<String, Object> claims = new HashMap<>();
+        Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
 
         claims.put("id", user.getId());
         claims.put("username", user.getUsername());
+        claims.put("roles", roles);
 
         return createToken(claims, user.getUsername());
     }

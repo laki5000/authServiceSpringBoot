@@ -1,5 +1,6 @@
 package com.example.config;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import lombok.extern.log4j.Log4j2;
@@ -16,17 +17,32 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private JdbcTemplate jdbcTemplate;
 
     /**
-     * Initializes the database with the users.sql file.
+     * Run method for initializing the database.
      *
-     * @param args the command line arguments
-     * @throws Exception if an error occurs
+     * @param args Command line arguments
+     * @throws Exception Exception thrown if an error occurs
      */
     @Override
     public void run(String... args) throws Exception {
         log.info("run called");
 
-        String sql = new String(Files.readAllBytes(Paths.get("src/main/resources/sql/users.sql")));
+        executeSql("src/main/resources/sql/init.sql");
+    }
 
-        jdbcTemplate.execute(sql);
+    /**
+     * Execute SQL method for executing SQL statements.
+     *
+     * @param filePath File path of the SQL file
+     * @throws IOException Exception thrown if an error occurs
+     */
+    private void executeSql(String filePath) throws IOException {
+        log.info("executeSql called");
+
+        String sql = new String(Files.readAllBytes(Paths.get(filePath)));
+        String[] sqlStatements = sql.split(";");
+
+        for (String statement : sqlStatements) {
+            jdbcTemplate.execute(statement.trim());
+        }
     }
 }

@@ -1,14 +1,12 @@
 package com.example.domain.user.model;
 
-import static com.example.constants.ValidationConstants.USERNAME_MAX_LENGTH;
-import static com.example.constants.ValidationConstants.USERNAME_MIN_LENGTH;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.example.base.model.BaseEntity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -27,11 +25,17 @@ public class User extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Size(min = USERNAME_MIN_LENGTH, max = USERNAME_MAX_LENGTH)
     @Column(nullable = false, unique = true)
     private String username;
 
     @NotNull
     @Column(nullable = false)
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
 }
