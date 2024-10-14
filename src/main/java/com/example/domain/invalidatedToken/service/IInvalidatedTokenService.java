@@ -11,4 +11,12 @@ public interface IInvalidatedTokenService {
      * @param expiresAt the time at which the token expires
      */
     void create(String token, Instant expiresAt);
+
+    /**
+     * Checks if a token exists.
+     *
+     * @param token the token to check
+     * @return true if the token exists, false otherwise
+     */
+    boolean existsByToken(String token);
 }

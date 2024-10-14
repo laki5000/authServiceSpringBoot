@@ -1,8 +1,12 @@
 package com.example.security;
 
+import static com.example.constants.EndpointConstants.LOGIN_PATH;
+import static com.example.constants.EndpointConstants.USER_BASE_URL;
+
 import com.example.domain.user.model.User;
 import com.example.domain.user.service.IUserService;
 import com.example.utils.service.IJwtService;
+import com.example.utils.service.IMessageService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Log4j2
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
+    private final IMessageService messageService;
     private final IJwtService jwtService;
     private final IUserService userService;
 
@@ -40,6 +45,12 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         log.debug("doFilterInternal called");
+
+        if (request.getRequestURI().equals(USER_BASE_URL + LOGIN_PATH)) {
+            filterChain.doFilter(request, response);
+
+            return;
+        }
 
         String token = request.getHeader("Authorization");
 

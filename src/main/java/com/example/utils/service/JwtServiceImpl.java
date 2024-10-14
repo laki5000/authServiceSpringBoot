@@ -185,6 +185,10 @@ public class JwtServiceImpl implements IJwtService {
 
         token = token.substring(7);
 
+        if (invalidatedTokenService.existsByToken(token)) {
+            return null;
+        }
+
         String decryptedToken = decryptToken(token);
 
         try {

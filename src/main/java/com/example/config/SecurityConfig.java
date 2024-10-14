@@ -6,6 +6,7 @@ import static com.example.constants.EndpointConstants.USER_BASE_URL;
 import com.example.domain.user.service.IUserService;
 import com.example.security.JwtFilter;
 import com.example.utils.service.IJwtService;
+import com.example.utils.service.IMessageService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class SecurityConfig {
      * Configures the security filter chain.
      *
      * @param http the HttpSecurity object to configure
+     * @param messageService the message service
      * @param jwtService the JWT service
      * @param userService the user service
      * @return the SecurityFilterChain object
@@ -33,7 +35,11 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http, IJwtService jwtService, IUserService userService) throws Exception {
+            HttpSecurity http,
+            IMessageService messageService,
+            IJwtService jwtService,
+            IUserService userService)
+            throws Exception {
         log.info("securityFilterChain called");
 
         http.csrf(AbstractHttpConfigurer::disable)
@@ -45,7 +51,7 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .authenticated())
                 .addFilterBefore(
-                        jwtFilter(jwtService, userService),
+                        jwtFilter(messageService, jwtService, userService),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -66,14 +72,16 @@ public class SecurityConfig {
     /**
      * Creates a JWT filter bean.
      *
+     * @param messageService the message service
      * @param jwtService the JWT service
      * @param userService the user service
      * @return the JWT filter bean
      */
     @Bean
-    public JwtFilter jwtFilter(IJwtService jwtService, IUserService userService) {
+    public JwtFilter jwtFilter(
+            IMessageService messageService, IJwtService jwtService, IUserService userService) {
         log.info("jwtFilter called");
 
-        return new JwtFilter(jwtService, userService);
+        return new JwtFilter(messageService, jwtService, userService);
     }
 }

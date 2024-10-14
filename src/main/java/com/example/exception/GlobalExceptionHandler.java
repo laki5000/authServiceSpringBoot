@@ -43,13 +43,13 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle invalid credentials exceptions.
+     * Handle unauthorized exceptions.
      *
      * @param ex the exception to handle
      * @return the response entity
      */
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ErrorResponseDTO> handleInvalidCredentialsException(Exception ex) {
+    public ResponseEntity<ErrorResponseDTO> handleUnauthorizedException(Exception ex) {
         return handleException(ex, ex.getMessage(), UNAUTHORIZED);
     }
 

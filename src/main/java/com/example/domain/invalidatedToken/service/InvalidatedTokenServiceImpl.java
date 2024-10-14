@@ -27,4 +27,17 @@ public class InvalidatedTokenServiceImpl implements IInvalidatedTokenService {
         invalidatedTokenRepository.save(
                 InvalidatedToken.builder().token(token).expiresAt(expiresAt).build());
     }
+
+    /**
+     * Checks if a token exists.
+     *
+     * @param token the token to check
+     * @return true if the token exists, false otherwise
+     */
+    @Override
+    public boolean existsByToken(String token) {
+        log.debug("existsByToken called");
+
+        return invalidatedTokenRepository.existsByToken(token);
+    }
 }
