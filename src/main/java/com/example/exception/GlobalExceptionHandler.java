@@ -32,6 +32,17 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handle not found exceptions.
+     *
+     * @param ex the exception to handle
+     * @return the response entity
+     */
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleNotFoundExceptions(Exception ex) {
+        return handleException(ex, ex.getMessage(), NOT_FOUND);
+    }
+
+    /**
      * Handle invalid credentials exceptions.
      *
      * @param ex the exception to handle

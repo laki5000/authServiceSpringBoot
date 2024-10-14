@@ -18,4 +18,12 @@ public interface IJwtService {
      * @param token the token to invalidate
      */
     void invalidateToken(String token);
+
+    /**
+     * Gets the username from a token.
+     *
+     * @param token the token
+     * @return the username
+     */
+    String getUsernameFromToken(String token);
 }

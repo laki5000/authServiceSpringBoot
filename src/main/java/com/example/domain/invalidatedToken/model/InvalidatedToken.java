@@ -22,7 +22,7 @@ public class InvalidatedToken {
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR(512)")
     private String token;
 
     @NotNull

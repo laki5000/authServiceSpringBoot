@@ -1,12 +1,14 @@
 package com.example.domain.user.service;
 
 import static com.example.constants.MessageConstants.*;
+import static com.example.constants.MessageConstants.ERROR_USER_NOT_FOUND;
 
 import com.example.domain.user.dto.request.UserLoginRequestDTO;
 import com.example.domain.user.dto.response.UserLoginResponseDTO;
 import com.example.domain.user.model.User;
 import com.example.domain.user.repository.IUserRepository;
 import com.example.exception.InvalidCredentialsException;
+import com.example.exception.NotFoundException;
 import com.example.utils.service.IJwtService;
 import com.example.utils.service.IMessageService;
 import java.util.Optional;
@@ -75,5 +77,22 @@ public class UserServiceImpl implements IUserService {
         log.debug("logout called");
 
         jwtService.invalidateToken(token);
+    }
+
+    /**
+     * Gets a user by their username.
+     *
+     * @param username the username
+     * @return the user
+     */
+    public User getByUsername(String username) {
+        log.debug("getByUsername called");
+
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(
+                        () ->
+                                new NotFoundException(
+                                        messageService.getMessage(ERROR_USER_NOT_FOUND)));
     }
 }

@@ -9,6 +9,7 @@ import com.example.domain.user.model.User;
 import com.example.exception.TokenEncryptionException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -170,5 +171,31 @@ public class JwtServiceImpl implements IJwtService {
                 .getPayload()
                 .getExpiration()
                 .toInstant();
+    }
+
+    /**
+     * Gets the username from a token.
+     *
+     * @param token the token
+     * @return the username
+     */
+    @Override
+    public String getUsernameFromToken(String token) {
+        log.debug("getUsernameFromToken called");
+
+        token = token.substring(7);
+
+        String decryptedToken = decryptToken(token);
+
+        try {
+            return Jwts.parser()
+                    .verifyWith(SECRET_KEY)
+                    .build()
+                    .parseSignedClaims(decryptedToken)
+                    .getPayload()
+                    .getSubject();
+        } catch (ExpiredJwtException | SignatureException | IllegalArgumentException e) {
+            return null;
+        }
     }
 }

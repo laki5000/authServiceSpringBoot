@@ -1,9 +1,6 @@
 package com.example.domain.user.controller;
 
 import com.example.domain.user.dto.request.UserLoginRequestDTO;
-import java.security.InvalidKeyException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import org.springframework.http.ResponseEntity;
 
 /** Controller interface for user controller. */
@@ -22,6 +19,5 @@ public interface IUserController {
      * @param token the token to log out
      * @return the response entity
      */
-    ResponseEntity<?> logout(String token)
-            throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException;
+    ResponseEntity<?> logout(String token);
 }

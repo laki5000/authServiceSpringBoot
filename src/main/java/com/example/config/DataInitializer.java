@@ -3,8 +3,8 @@ package com.example.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 /** Data initializer class for initializing the database. */
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * Run method for initializing the database.
