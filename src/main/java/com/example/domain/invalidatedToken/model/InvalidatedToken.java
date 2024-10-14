@@ -5,9 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 /** Entity class for invalidated tokens. */
@@ -16,6 +14,8 @@ import org.hibernate.annotations.CreationTimestamp;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InvalidatedToken {
     @Id
     @GeneratedValue(strategy = IDENTITY)

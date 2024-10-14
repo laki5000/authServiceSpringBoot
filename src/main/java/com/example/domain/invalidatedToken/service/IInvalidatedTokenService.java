@@ -19,4 +19,11 @@ public interface IInvalidatedTokenService {
      * @return true if the token exists, false otherwise
      */
     boolean existsByToken(String token);
+
+    /**
+     * Deletes expired tokens.
+     *
+     * @return the number of deleted tokens
+     */
+    int deleteExpiredTokens();
 }

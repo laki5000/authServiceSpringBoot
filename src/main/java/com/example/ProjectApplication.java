@@ -2,9 +2,11 @@ package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /** Main class of the application. */
 @SpringBootApplication
+@EnableScheduling
 public class ProjectApplication {
     /**
      * Main method of the application.

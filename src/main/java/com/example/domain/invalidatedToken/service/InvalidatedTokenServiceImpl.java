@@ -40,4 +40,17 @@ public class InvalidatedTokenServiceImpl implements IInvalidatedTokenService {
 
         return invalidatedTokenRepository.existsByToken(token);
     }
+
+    /**
+     * Deletes expired tokens.
+     *
+     * @return the number of deleted tokens
+     */
+    public int deleteExpiredTokens() {
+        log.debug("deleteExpiredTokens called");
+
+        Instant now = Instant.now();
+
+        return invalidatedTokenRepository.deleteByExpiresAtBefore(now);
+    }
 }
