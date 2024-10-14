@@ -2,11 +2,16 @@ package com.example.security;
 
 import static com.example.constants.EndpointConstants.LOGIN_PATH;
 import static com.example.constants.EndpointConstants.USER_BASE_URL;
+import static com.example.constants.MessageConstants.ERROR_DEFAULT_MESSAGE;
+import static com.example.constants.MessageConstants.ERROR_USER_INVALID_TOKEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import com.example.domain.user.model.User;
 import com.example.domain.user.service.IUserService;
+import com.example.utils.dto.response.ErrorResponseDTO;
 import com.example.utils.service.IJwtService;
 import com.example.utils.service.IMessageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final IMessageService messageService;
     private final IJwtService jwtService;
     private final IUserService userService;
+    private final ObjectMapper objectMapper;
 
     /**
      * Filters the request.
@@ -55,7 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = request.getHeader("Authorization");
 
         if (token == null || !token.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            setUpInvalidTokenResponse(response);
 
             return;
         }
@@ -63,7 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = jwtService.getUsernameFromToken(token);
 
         if (username == null) {
-            filterChain.doFilter(request, response);
+            setUpInvalidTokenResponse(response);
 
             return;
         }
@@ -80,5 +86,30 @@ public class JwtFilter extends OncePerRequestFilter {
         authenticationToken.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Sets up the invalid token response.
+     *
+     * @param response the HTTP servlet response
+     * @throws IOException if an error occurs
+     */
+    private void setUpInvalidTokenResponse(HttpServletResponse response) throws IOException {
+        log.debug("invalidTokenResponse called");
+
+        response.setStatus(SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        String message =
+                messageService.getMessage(ERROR_DEFAULT_MESSAGE)
+                        + " "
+                        + messageService.getMessage(ERROR_USER_INVALID_TOKEN);
+        ErrorResponseDTO errorResponse =
+                ErrorResponseDTO.builder()
+                        .message(message)
+                        .errorCode(HttpServletResponse.SC_UNAUTHORIZED)
+                        .build();
+
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }
