@@ -3,13 +3,10 @@ package com.example.domain.user.service;
 import static com.example.constants.MessageConstants.*;
 import static com.example.constants.MessageConstants.ERROR_USER_NOT_FOUND;
 
-import com.example.domain.user.dto.request.UserLoginRequestDTO;
-import com.example.domain.user.dto.response.UserLoginResponseDTO;
 import com.example.domain.user.model.User;
 import com.example.domain.user.repository.IUserRepository;
 import com.example.exception.InvalidCredentialsException;
 import com.example.exception.NotFoundException;
-import com.example.utils.service.IJwtService;
 import com.example.utils.service.IMessageService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,28 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements IUserService {
     private final IMessageService messageService;
-    private final IJwtService jwtService;
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    /**
-     * Logs in a user.
-     *
-     * @param userLoginRequestDTO the DTO containing the user's login details
-     * @return the response DTO
-     * @throws InvalidCredentialsException if the credentials are invalid
-     */
-    @Override
-    public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
-        log.debug("login called");
-
-        User user =
-                getByLoginAndPassword(
-                        userLoginRequestDTO.getUsername(), userLoginRequestDTO.getPassword());
-        String token = jwtService.generateToken(user);
-
-        return UserLoginResponseDTO.builder().token(token).build();
-    }
 
     /**
      * Gets a user by their login details.
@@ -54,10 +31,18 @@ public class UserServiceImpl implements IUserService {
      * @return the user
      * @throws InvalidCredentialsException if the credentials are invalid
      */
-    private User getByLoginAndPassword(String username, String password) {
+    @Override
+    public User getByUsernameAndPassword(String username, String password) {
         log.debug("getById called");
 
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> user;
+
+        try {
+            user = userRepository.findByUsername(username);
+
+        } catch (NotFoundException e) {
+            user = Optional.empty();
+        }
 
         if (user.isEmpty() || !passwordEncoder.matches(password, user.get().getPassword())) {
             throw new InvalidCredentialsException(
@@ -68,23 +53,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-     * Logs out a user.
-     *
-     * @param token the token to log out
-     */
-    @Override
-    public void logout(String token) {
-        log.debug("logout called");
-
-        jwtService.invalidateToken(token);
-    }
-
-    /**
      * Gets a user by their username.
      *
      * @param username the username
      * @return the user
      */
+    @Override
     public User getByUsername(String username) {
         log.debug("getByUsername called");
 

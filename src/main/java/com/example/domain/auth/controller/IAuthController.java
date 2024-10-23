@@ -1,10 +1,10 @@
-package com.example.domain.user.controller;
+package com.example.domain.auth.controller;
 
 import com.example.domain.user.dto.request.UserLoginRequestDTO;
 import org.springframework.http.ResponseEntity;
 
-/** Controller interface for user controller. */
-public interface IUserController {
+/** Controller interface for auth controller. */
+public interface IAuthController {
     /**
      * Logs in a user.
      *

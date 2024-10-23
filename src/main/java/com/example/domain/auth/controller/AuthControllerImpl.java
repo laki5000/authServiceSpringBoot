@@ -1,12 +1,12 @@
-package com.example.domain.user.controller;
+package com.example.domain.auth.controller;
 
 import static com.example.constants.EndpointConstants.*;
 import static com.example.constants.MessageConstants.SUCCESS_USER_LOGGED_IN;
 import static com.example.constants.MessageConstants.SUCCESS_USER_LOGGED_OUT;
 
 import com.example.base.dto.response.BaseResponseDTO;
+import com.example.domain.auth.service.IAuthService;
 import com.example.domain.user.dto.request.UserLoginRequestDTO;
-import com.example.domain.user.service.IUserService;
 import com.example.utils.dto.response.SuccessResponseDTO;
 import com.example.utils.service.IMessageService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(USER_BASE_URL)
+@RequestMapping(AUTH_BASE_PATH)
 @SuppressFBWarnings(value = "EI_EXPOSE_REP2")
-public class UserControllerImpl implements IUserController {
+public class AuthControllerImpl implements IAuthController {
     private final IMessageService messageService;
-    private final IUserService userService;
+    private final IAuthService userService;
 
     /**
      * Logs in a user.
