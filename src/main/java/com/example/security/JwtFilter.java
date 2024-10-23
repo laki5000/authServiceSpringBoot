@@ -1,7 +1,7 @@
 package com.example.security;
 
+import static com.example.constants.EndpointConstants.AUTH_BASE_PATH;
 import static com.example.constants.EndpointConstants.LOGIN_PATH;
-import static com.example.constants.EndpointConstants.USER_BASE_URL;
 import static com.example.constants.MessageConstants.ERROR_DEFAULT_MESSAGE;
 import static com.example.constants.MessageConstants.ERROR_USER_INVALID_TOKEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -52,7 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.debug("doFilterInternal called");
 
-        if (request.getRequestURI().equals(USER_BASE_URL + LOGIN_PATH)) {
+        if (request.getRequestURI().equals(AUTH_BASE_PATH + LOGIN_PATH)) {
             filterChain.doFilter(request, response);
 
             return;

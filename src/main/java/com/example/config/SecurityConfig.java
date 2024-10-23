@@ -1,7 +1,7 @@
 package com.example.config;
 
+import static com.example.constants.EndpointConstants.AUTH_BASE_PATH;
 import static com.example.constants.EndpointConstants.LOGIN_PATH;
-import static com.example.constants.EndpointConstants.USER_BASE_URL;
 
 import com.example.domain.user.service.IUserService;
 import com.example.security.JwtFilter;
@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers(USER_BASE_URL + LOGIN_PATH)
+                                auth.requestMatchers(AUTH_BASE_PATH + LOGIN_PATH)
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
