@@ -1,7 +1,7 @@
 package com.example.config;
 
-import static com.example.constants.EndpointConstants.AUTH_BASE_PATH;
-import static com.example.constants.EndpointConstants.LOGIN_PATH;
+import static com.example.constants.Constants.AUTH_BASE_PATH;
+import static com.example.constants.Constants.LOGIN_PATH;
 
 import com.example.domain.user.service.IUserService;
 import com.example.security.JwtFilter;

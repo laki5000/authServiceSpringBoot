@@ -1,9 +1,9 @@
 package com.example.security;
 
-import static com.example.constants.EndpointConstants.AUTH_BASE_PATH;
-import static com.example.constants.EndpointConstants.LOGIN_PATH;
-import static com.example.constants.MessageConstants.ERROR_DEFAULT_MESSAGE;
-import static com.example.constants.MessageConstants.ERROR_USER_INVALID_TOKEN;
+import static com.example.constants.Constants.AUTH_BASE_PATH;
+import static com.example.constants.Constants.ERROR_DEFAULT_MESSAGE;
+import static com.example.constants.Constants.ERROR_USER_INVALID_TOKEN;
+import static com.example.constants.Constants.LOGIN_PATH;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import com.example.domain.user.model.User;

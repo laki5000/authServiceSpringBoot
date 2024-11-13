@@ -1,6 +1,6 @@
 package com.example.exception;
 
-import static com.example.constants.MessageConstants.ERROR_DEFAULT_MESSAGE;
+import static com.example.constants.Constants.ERROR_DEFAULT_MESSAGE;
 import static org.springframework.http.HttpStatus.*;
 
 import com.example.utils.dto.response.ErrorResponseDTO;

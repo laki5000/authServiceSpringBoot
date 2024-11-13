@@ -1,7 +1,7 @@
 package com.example.domain.user.service;
 
-import static com.example.constants.MessageConstants.*;
-import static com.example.constants.MessageConstants.ERROR_USER_NOT_FOUND;
+import static com.example.constants.Constants.ERROR_USER_INVALID_CREDENTIALS;
+import static com.example.constants.Constants.ERROR_USER_NOT_FOUND;
 
 import com.example.domain.user.model.User;
 import com.example.domain.user.repository.IUserRepository;
@@ -33,16 +33,9 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public User getByUsernameAndPassword(String username, String password) {
-        log.debug("getById called");
+        log.debug("getByUsernameAndPassword called");
 
-        Optional<User> user;
-
-        try {
-            user = userRepository.findByUsername(username);
-
-        } catch (NotFoundException e) {
-            user = Optional.empty();
-        }
+        Optional<User> user = userRepository.findByUsername(username);
 
         if (user.isEmpty() || !passwordEncoder.matches(password, user.get().getPassword())) {
             throw new InvalidCredentialsException(

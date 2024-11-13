@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:latest
-    container_name: db_authService
+    container_name: db_authServiceSpringBoot
     environment:
       MYSQL_ROOT_PASSWORD: rootpw
       MYSQL_DATABASE: elakatos
@@ -14,7 +14,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: pma_authService
+    container_name: pma_authServiceSpringBoot
     links:
       - db
     environment:

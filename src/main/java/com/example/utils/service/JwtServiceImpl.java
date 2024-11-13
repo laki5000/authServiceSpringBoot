@@ -1,12 +1,13 @@
 package com.example.utils.service;
 
-import static com.example.constants.MessageConstants.ERROR_TOKEN_DECRYPTION;
-import static com.example.constants.MessageConstants.ERROR_TOKEN_ENCRYPTION;
+import static com.example.constants.Constants.ERROR_TOKEN_ENCRYPTION;
 
 import com.example.domain.invalidatedToken.service.IInvalidatedTokenService;
 import com.example.domain.user.model.Role;
 import com.example.domain.user.model.User;
 import com.example.exception.TokenEncryptionException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 public class JwtServiceImpl implements IJwtService {
     private final IMessageService messageService;
     private final IInvalidatedTokenService invalidatedTokenService;
+    private final ObjectMapper objectMapper;
     private final SecretKey SECRET_KEY;
     private final SecretKeySpec SECRET_KEY_SPEC;
     private final Cipher CIPHER;
@@ -43,6 +45,7 @@ public class JwtServiceImpl implements IJwtService {
     public JwtServiceImpl(
             IMessageService messageService,
             IInvalidatedTokenService invalidatedTokenService,
+            ObjectMapper objectMapper,
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.expiration}") Long expirationTime)
             throws NoSuchPaddingException, NoSuchAlgorithmException {
@@ -50,6 +53,7 @@ public class JwtServiceImpl implements IJwtService {
 
         this.messageService = messageService;
         this.invalidatedTokenService = invalidatedTokenService;
+        this.objectMapper = objectMapper;
         this.SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.SECRET_KEY_SPEC = new SecretKeySpec(secretKey.getBytes(), algorithm);
         this.CIPHER = Cipher.getInstance(algorithm);
@@ -91,54 +95,43 @@ public class JwtServiceImpl implements IJwtService {
         Date now = new Date(nowMillis);
         Date expiration = new Date(expirationMillis);
 
-        return encryptToken(
-                Jwts.builder()
-                        .claims(claims)
-                        .subject(subject)
-                        .issuedAt(now)
-                        .expiration(expiration)
-                        .signWith(SECRET_KEY)
-                        .compact());
+        return Jwts.builder()
+                .claim("encryptedClaims", encryptClaims(claims))
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(SECRET_KEY)
+                .compact();
     }
 
     /**
-     * Encrypts a token.
+     * Encrypts the claims of a token.
      *
-     * @param token the token to encrypt
-     * @return the encrypted token
-     * @throws TokenEncryptionException if the token cannot be encrypted
+     * @param claims the claims to encrypt
+     * @return the encrypted claims
+     * @throws TokenEncryptionException if the claims cannot be encrypted
      */
-    private String encryptToken(String token) {
-        log.debug("encryptToken called");
+    private String encryptClaims(Map<String, Object> claims) {
+        log.debug("encryptClaims called");
+
+        String encryptedClaims = null;
 
         try {
+            String claimsString = objectMapper.writeValueAsString(claims);
+
             CIPHER.init(Cipher.ENCRYPT_MODE, SECRET_KEY_SPEC);
 
-            return Base64.getEncoder().encodeToString(CIPHER.doFinal(token.getBytes()));
-        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            encryptedClaims =
+                    Base64.getEncoder().encodeToString(CIPHER.doFinal(claimsString.getBytes()));
+        } catch (JsonProcessingException
+                | InvalidKeyException
+                | IllegalBlockSizeException
+                | BadPaddingException e) {
             throw new TokenEncryptionException(
                     messageService.getMessage(ERROR_TOKEN_ENCRYPTION), e);
         }
-    }
 
-    /**
-     * Decrypts a token.
-     *
-     * @param token the token to decrypt
-     * @return the decrypted token
-     * @throws TokenEncryptionException if the token cannot be decrypted
-     */
-    private String decryptToken(String token) {
-        log.debug("decryptToken called");
-
-        try {
-            CIPHER.init(Cipher.DECRYPT_MODE, SECRET_KEY_SPEC);
-
-            return new String(CIPHER.doFinal(Base64.getDecoder().decode(token)));
-        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new TokenEncryptionException(
-                    messageService.getMessage(ERROR_TOKEN_DECRYPTION), e);
-        }
+        return encryptedClaims;
     }
 
     /**
@@ -152,9 +145,7 @@ public class JwtServiceImpl implements IJwtService {
 
         token = token.substring(7);
 
-        String decryptedToken = decryptToken(token);
-
-        invalidatedTokenService.create(token, getExpireAt(decryptedToken));
+        invalidatedTokenService.create(token, getExpireAt(token));
     }
 
     /**
@@ -189,13 +180,11 @@ public class JwtServiceImpl implements IJwtService {
             return null;
         }
 
-        String decryptedToken = decryptToken(token);
-
         try {
             return Jwts.parser()
                     .verifyWith(SECRET_KEY)
                     .build()
-                    .parseSignedClaims(decryptedToken)
+                    .parseSignedClaims(token)
                     .getPayload()
                     .getSubject();
         } catch (ExpiredJwtException | SignatureException | IllegalArgumentException e) {

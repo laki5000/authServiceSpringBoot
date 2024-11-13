@@ -1,8 +1,6 @@
 package com.example.domain.auth.controller;
 
-import static com.example.constants.EndpointConstants.*;
-import static com.example.constants.MessageConstants.SUCCESS_USER_LOGGED_IN;
-import static com.example.constants.MessageConstants.SUCCESS_USER_LOGGED_OUT;
+import static com.example.constants.Constants.*;
 
 import com.example.base.dto.response.BaseResponseDTO;
 import com.example.domain.auth.service.IAuthService;
@@ -25,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthControllerImpl implements IAuthController {
     private final IMessageService messageService;
     private final IAuthService userService;
+
+    public static final String SUCCESS_USER_LOGGED_IN = "success.user.logged_in";
+    public static final String SUCCESS_USER_LOGGED_OUT = "success.user.logged_out";
 
     /**
      * Logs in a user.

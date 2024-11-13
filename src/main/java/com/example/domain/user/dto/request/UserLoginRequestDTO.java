@@ -1,7 +1,7 @@
 package com.example.domain.user.dto.request;
 
-import static com.example.constants.ValidationConstants.PASSWORD_REQUIRED_MESSAGE;
-import static com.example.constants.ValidationConstants.USERNAME_REQUIRED_MESSAGE;
+import static com.example.constants.Constants.PASSWORD_REQUIRED_MESSAGE;
+import static com.example.constants.Constants.USERNAME_REQUIRED_MESSAGE;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
